@@ -14,7 +14,23 @@ class NotDatabaseSet(Exception):
 class DBHelper:
 
     def __init__(self, database:str=None, db_setting_json_path:str=None):
-        
+        """_summary_
+
+        Args:
+            database (str, optional): データベース名。初期値はNone。
+            db_setting_json_path (str, optional): 設定ファイルのパス文字列。 初期値はNone。
+
+        Raises:
+            NotDatabaseSet: データベースの設定が存在しない場合に発生。
+            NotDBSettingJsonFile: 設定ファイルが見つからない場合に発生。
+            
+        Examples:
+            >>> path = "D:/Users/kent2/ドキュメント/xserver/settings/mysql_key.json"
+                sql = "SELECT * FROM TABLE1 WHERE CODE = %s AND NAME = %s"
+                args = ("0010","佐藤")
+                with DBHelper("database", path) as table:
+                    df = table.dataframe(sql, args)
+        """
         # データベース名がNoneな場合例外を投げる
         if database is None:
             raise NotDatabaseSet()
@@ -152,7 +168,7 @@ class DBHelper:
         Returns:
             int: 更新件数
         
-        Example:
+        Examples:
             >>> sql = "INSERT INTO TABLE1 (CODE, NAME) VALUE (%s, %s)"
                 list = [("0010", "佐藤"), ("0020", "高橋")]
                 i = excutemany(sql, list)
@@ -177,3 +193,9 @@ class DBHelper:
         """
         df = DataFrame(self.fetch(sql, args))
         return df
+
+path = "D:/Users/kent2/ドキュメント/xserver/settings/mysql_key.json"
+args = ("0010","")
+with DBHelper("xs621264_pcstock", path) as main:
+    brands = main.dataframe("select * from brands")
+    brands.to_csv("ss.csv")
