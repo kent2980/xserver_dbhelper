@@ -25,11 +25,45 @@ class DBHelper:
             NotDBSettingJsonFile: 設定ファイルが見つからない場合に発生。
             
         Examples:
-            >>> path = "D:/Users/kent2/ドキュメント/xserver/settings/mysql_key.json"
-                sql = "SELECT * FROM TABLE1 WHERE CODE = %s AND NAME = %s"
-                args = ("0010","佐藤")
-                with DBHelper("database", path) as table:
-                    df = table.dataframe(sql, args)
+
+            ***** 初期化 ********************************************************************
+            
+            >>> database = "************"
+                db_setting_path = "****/*****/*******.json"
+                with DBHelper(database, db_setting_path) as helper:
+            
+            ***** SELECT文を発行 **********************************************************
+
+            >>> sql = "SELECT * FROM TABLE1 WHERE CODE = %s AND NAME = %s"
+                args = ["0010","佐藤"]
+                
+            (a) -> DataFrame 全てのレコードを返却
+            
+            >>> df = helper.dataframe(sql, args)
+            
+            (b) -> tuple 全てのレコードを返却
+            
+            >>> tp = helper.fetch(sql, args)
+            
+            (c) -> dict 1件ずつ返却
+            
+            >>> for di in helper.fetchItem(sql,args):
+                    print(di)
+                    
+            ***** INSERT,UPDATE,DELETE文を発行 ******************************************
+            
+            >>> sql = "INSERT INTO TABLE1 (CODE, NAME) VALUE (%s, %s)
+                args = ["0010", "佐藤"]
+                many_args = [["0010", "佐藤"], ["0020", "高橋"]]
+                
+            (a) -> int 1件のデータを更新
+            
+            >>> i = helper.execute(sql, args)
+            
+            (b) -> int まとめてデータを更新
+            
+            >>> i = helper.executemany(sql, many_args)
+                
         """
         # データベース名がNoneな場合例外を投げる
         if database is None:
@@ -100,7 +134,7 @@ class DBHelper:
         
         Examples:
             >>> sql = "SELECT * FROM TABLE1 WHERE CODE = %s AND NAME = %s"
-                args = ("0010", "佐藤")
+                args = ["0010", "佐藤"]
                 result = fetch(sql, args)
         """
         self.cur.execute(sql, args)
@@ -122,7 +156,7 @@ class DBHelper:
             
         Examples:
             >>> sql = "SELECT * FROM TABLE1 WHERE CODE = %s AND NAME = %s"
-                args = ("0010", "佐藤")
+                args = ["0010", "佐藤"]
                 for item in fetchItem(sql, args):
                     print(item)
                     
@@ -152,13 +186,13 @@ class DBHelper:
             
         Examples:
             >>> sql = "INSERT INTO TABLE1 (CODE, NAME) VALUE (%s, %s)
-                args = ("0010", "佐藤")
+                args = ["0010", "佐藤"]
                 i = excute(sql, args)
         """
         self.cur.execute(sql, args)
         self.con.commit()
 
-    def excutemany(self, sql:str, list:list) -> int:
+    def executemany(self, sql:str, list:list) -> int:
         """SQLクエリでまとめてデータの更新を行います。
 
         Args:
@@ -170,8 +204,8 @@ class DBHelper:
         
         Examples:
             >>> sql = "INSERT INTO TABLE1 (CODE, NAME) VALUE (%s, %s)"
-                list = [("0010", "佐藤"), ("0020", "高橋")]
-                i = excutemany(sql, list)
+                list = [["0010", "佐藤"], ["0020", "高橋"]]
+                i = executemany(sql, list)
         """
         self.cur.executemany(sql, list)
         self.con.commit()
@@ -188,14 +222,16 @@ class DBHelper:
         
         Examples:
             >>> sql = "SELECT * FROM TABLE1 WHERE CODE = %s AND NAME = %s"
-                args = ("0010", "佐藤")
+                args = ["0010", "佐藤"]
                 df = fetch(sql, args)
         """
         df = DataFrame(self.fetch(sql, args))
         return df
 
-path = "D:/Users/kent2/ドキュメント/xserver/settings/mysql_key.json"
-args = ("0010","")
-with DBHelper("xs621264_pcstock", path) as main:
-    brands = main.dataframe("select * from brands")
-    brands.to_csv("ss.csv")
+if __name__ == "__main__":
+
+    path = "******/*****/*****.json"
+    args = ("0010","")
+    with DBHelper("*****", path) as main:
+        brands = main.dataframe("select * from brands")
+        brands.to_csv("***.csv") 
