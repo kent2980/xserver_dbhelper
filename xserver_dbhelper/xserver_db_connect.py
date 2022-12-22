@@ -13,6 +13,55 @@ class NotDatabaseSet(Exception):
 
 class DBHelper:
     """xserverのサーバー内のMysqlの操作機能を提供します
+
+    Args:
+        database (str, optional): データベース名。初期値はNone。
+        db_setting_json_path (str, optional): 設定ファイルのパス文字列。 初期値はNone。
+
+    Raises:
+        NotDatabaseSet: データベースの設定が存在しない場合に発生。
+        NotDBSettingJsonFile: 設定ファイルが見つからない場合に発生。
+        
+    Examples:
+
+        ***** 初期化 ********************************************************************
+        
+        >>> database = "************"
+            db_setting_path = "****/*****/*******.json"
+            with DBHelper(database, db_setting_path) as helper:
+        
+        ***** SELECT文を発行 **********************************************************
+
+        >>> sql = "SELECT * FROM TABLE1 WHERE CODE = %s AND NAME = %s"
+            args = ["0010","佐藤"]
+            
+        (a) -> DataFrame 全てのレコードを返却
+        
+        >>> df = helper.dataframe(sql, args)
+        
+        (b) -> tuple 全てのレコードを返却
+        
+        >>> tp = helper.fetch(sql, args)
+        
+        (c) -> dict 1件ずつ返却
+        
+        >>> for di in helper.fetchItem(sql,args):
+                print(di)
+                
+        ***** INSERT,UPDATE,DELETE文を発行 ******************************************
+        
+        >>> sql = "INSERT INTO TABLE1 (CODE, NAME) VALUE (%s, %s)
+            args = ["0010", "佐藤"]
+            many_args = [["0010", "佐藤"], ["0020", "高橋"]]
+            
+        (a) -> int 1件のデータを更新
+        
+        >>> i = helper.execute(sql, args)
+        
+        (b) -> int まとめてデータを更新
+        
+        >>> i = helper.executemany(sql, many_args)
+            
     """
 
     def __init__(self, database:str=None, db_setting_json_path:str=None):
