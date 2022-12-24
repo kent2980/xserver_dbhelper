@@ -135,7 +135,6 @@ class DBHelper:
             self.db_user = json_data[u"db_user"]
             self.db_password = json_data[u"db_password"]
             self.ssh_pkey = os.path.join(os.path.dirname(db_setting_json_path), json_data[u"ssh_pkey_name"])
-            print(self.ssh_pkey)
             self.ssh_host = json_data[u"ssh_host"]
             self.ssh_port = int(json_data[u"ssh_port"])
             self.ssh_user = json_data[u"ssh_user"]
