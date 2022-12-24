@@ -170,7 +170,13 @@ class DBHelper:
     def __exit__(self, exc_type, exc_value, traceback):
         self.con.close()
         self.server.stop()
-    
+        
+    def close(self):
+        """明示的にMysqlの接続を切断します。
+        """
+        
+        self.con.close()
+        self.server.stop()    
         
     def fetch(self, sql:str, args=None) -> tuple:        
         """SQLクエリで抽出した全てのレコードを返却します。
