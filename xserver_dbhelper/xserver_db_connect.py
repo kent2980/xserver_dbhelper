@@ -144,7 +144,13 @@ class DBHelper:
             
         except Exception:
             raise NotDBSettingJsonFile()
+    
+    def connect(self):
+        """明示的にMysqlの接続を開始します。
+        """
         
+        self.__enter__()
+    
     def __enter__(self):
         # SShサーバーへ接続します
         self.server = SSHTunnelForwarder(
@@ -175,8 +181,7 @@ class DBHelper:
         """明示的にMysqlの接続を切断します。
         """
         
-        self.con.close()
-        self.server.stop()    
+        self.__exit__()  
         
     def fetch(self, sql:str, args=None) -> tuple:        
         """SQLクエリで抽出した全てのレコードを返却します。
