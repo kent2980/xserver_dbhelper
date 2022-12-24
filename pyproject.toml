@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "xserver-dbhelper"
-version = "0.1.43"
+version = "0.1.44"
 description = ""
 authors = ["kent <kent2980@gmail.com>"]
 readme = "README.md"
