@@ -2,6 +2,7 @@ from sshtunnel import SSHTunnelForwarder
 import pymysql
 import json
 from pandas import DataFrame
+import os
 
 class NotDBSettingJsonFile(Exception):
     def __str__(self) -> str:
@@ -137,7 +138,7 @@ class DBHelper:
             self.ssh_host = json_data[u"ssh_host"]
             self.ssh_port = int(json_data[u"ssh_port"])
             self.ssh_user = json_data[u"ssh_user"]
-            self.ssh_pkey_pass = json_data[u"ssh_pkey_pass"]
+            self.ssh_pkey_pass = os.path.join(db_setting_json_path, json_data[u"ssh_pkey_name"])
             self.ssh_mysql_host = json_data[u"ssh_mysql_host"]
             self.ssh_mysql_port = int(json_data[u"ssh_mysql_port"])
             
